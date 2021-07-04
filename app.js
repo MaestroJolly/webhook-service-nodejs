@@ -32,7 +32,7 @@ app.get("*", (req, res) => {
 
 app.post("/events", (req, res) => {
   const data = req.body;
-  res.json(true);
+  res.json({ data: true });
 });
 
 app.listen(PORT, () => {
