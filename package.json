@@ -1,0 +1,14 @@
+{
+  "name": "webhook-service-nodejs",
+  "version": "1.0.0",
+  "description": "Webhook application built in nodeJS with slack hook notification support for receiving events. This can also support database implementation for hook data storage if preferred.",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node app.js",
+    "start:dev": "nodemon"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}
