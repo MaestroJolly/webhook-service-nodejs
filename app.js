@@ -1,8 +1,9 @@
 "use strict";
 
-const { env, PORT } = require("./config");
+const { env, PORT, slackHookUrl } = require("./config");
 const express = require("express");
 const app = express();
+const axios = require("axios");
 const cors = require("cors");
 const logger = require("./utils/logger");
 const morgan = require("morgan");
@@ -23,6 +24,10 @@ app.use(
 );
 app.use(express.json({ limit: "10mb" }));
 
+/**
+ *  wildcard get endpoint to return all
+ *  get calls to return the response below.
+ */
 app.get("*", (req, res) => {
   res.json({
     app: "This webhook app is up and listening for hook data.",
@@ -30,9 +35,29 @@ app.get("*", (req, res) => {
   });
 });
 
-app.post("/events", (req, res) => {
+/**
+ * hook endpoint integrated with slack to post
+ * hook data as notification on slack.
+ */
+app.post("/events", async (req, res) => {
   const data = req.body;
-  res.json({ data: true });
+
+  const options = {
+    method: "POST",
+    headers: { "content-type": "application/json" },
+    data: { text: "```" + JSON.stringify(data, null, 2) + "```" },
+    url: slackHookUrl,
+  };
+
+  try {
+    await axios(options);
+    res.json({ status: "success", message: true });
+  } catch (error) {
+    logger.error(
+      JSON.stringify({ stack_trace: error.stack, error_message: error.message })
+    );
+    res.status(400).send({ status: "error", message: error.message });
+  }
 });
 
 app.listen(PORT, () => {
