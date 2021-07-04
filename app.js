@@ -66,6 +66,11 @@ app.post("/events", async (req, res) => {
   }
 });
 
-app.listen(PORT, () => {
-  logger.info(`app is running on ${PORT}`);
-});
+app
+  .listen(PORT, () => {
+    logger.info(`app is running on ${PORT}.`);
+  })
+  .on("error", (err) => {
+    logger.error(err);
+    process.exit(1);
+  });
