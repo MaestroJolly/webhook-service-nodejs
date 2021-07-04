@@ -7,6 +7,7 @@ const axios = require("axios");
 const cors = require("cors");
 const logger = require("./utils/logger");
 const morgan = require("morgan");
+const requestIp = require("request-ip");
 
 // cross-origin configuration
 const corsOptions = {
@@ -40,7 +41,12 @@ app.get("*", (req, res) => {
  * hook data as notification on slack.
  */
 app.post("/events", async (req, res) => {
-  const data = req.body;
+  const data = {
+    user_agent: req.headers["user-agent"],
+    client_request_ip: requestIp.getClientIp(req),
+    request_date: new Date(),
+    hook_data: req.body,
+  };
 
   const options = {
     method: "POST",
